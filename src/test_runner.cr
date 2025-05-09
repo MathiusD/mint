@@ -8,7 +8,7 @@ module Mint
       property suite : String?
       property result : String?
 
-      property location : Ast::Node::Location?
+      property location : Array(Ast::Node::Location)?
     end
 
     BROWSER_PATHS = {
@@ -293,9 +293,11 @@ module Mint
               .colorize(:red)
 
             if location = failure.location
-              terminal.puts "<| #{location.filename}:#{location.start[0]}"
-                .indent(8)
-                .colorize(:dark_gray)
+              location.each do |location|
+                terminal.puts "<| #{location.filename}:#{location.start[0]}"
+                  .indent(8)
+                  .colorize(:dark_gray)
+              end
             end
           end
         end

@@ -8,6 +8,12 @@
     <script src="/external-javascripts.js"></script>
     <script src="/runtime.js"></script>
     <script>
+      class TestExceptionWithLocation {
+        constructor (message, location) {
+          this.message = message
+          this.location = location
+        }
+      }
       class TestRunner {
         constructor () {
           this.socket = new WebSocket("<%= ws_url %>")
@@ -74,8 +80,9 @@
           }))
         }
 
-        reportTested (test, type, message) {
-          this.report(type, this.suite.name, test.name, message, test.location)
+        reportTested (test, type, message, specificLocation = null) {
+          this.report(type, this.suite.name, test.name, message,
+            specificLocation == null ? test.location : specificLocation)
         }
 
         crash (message) {
@@ -121,7 +128,11 @@
                   await result.run()
                   this.reportTested(test, "SUCCEEDED", result.subject)
                 } catch (error) {
-                  this.reportTested(test, "FAILED", error)
+                  if (error instanceof TestExceptionWithLocation) {
+                    this.reportTested(test, "FAILED", error.message, error.location)
+                  } else {
+                    this.reportTested(test, "FAILED", error)
+                  }
                 }
               } else {
                 if (result) {
@@ -132,7 +143,11 @@
               }
             } catch (error) {
               // An error occurred while trying to run a test; this is different from the test itself failing.
-              this.reportTested(test, "ERRORED", error)
+              if (error instanceof TestExceptionWithLocation) {
+                this.reportTested(test, "ERRORED", error.message, error.location)
+              } else {
+                this.reportTested(test, "ERRORED", error)
+              }
             }
             this.next(resolve, reject)
           })

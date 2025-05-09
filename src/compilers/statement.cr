@@ -26,5 +26,9 @@ module Mint
         right
       end
     end
+
+    def _compile_test(node : Ast::Statement, last : Bool) : String
+      _compile node, last
+    end
   end
 end

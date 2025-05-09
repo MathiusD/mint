@@ -6,6 +6,10 @@ suite "Array equality" {
   test "different values" {
     [Maybe.just("b")] != [Maybe.just("a")]
   }
+
+  test "Foo" {
+    [Maybe.just("b")] == [Maybe.just("a")]
+  }
 }
 
 suite "Array.any" {
@@ -17,6 +21,16 @@ suite "Array.any" {
   test "returns false if no item matches the predicate" {
     ([1, 2, 3, 4, 5, 6]
     |> Array.any((number : Number) : Bool { number == 9 })) == false
+  }
+
+  test "Foo" {
+    ([1, 2, 3, 4, 5, 6]
+    |> Array.any((number : Number) : Bool { number == 9 })) == true
+  }
+
+  test "Foo 2" {
+    Test.Context.of(1)
+    |> Test.Context.assertEqual(2)
   }
 }
 

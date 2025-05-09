@@ -376,11 +376,20 @@ module Mint
       function(name, arguments, yield)
     end
 
-    def return(value)
+    def return(value : Array(String))
       if value.empty?
         "return"
       else
         "return #{value}"
+      end
+    end
+
+    def return(value : String?)
+      case value
+      when String
+        "return #{value}"
+      else
+        "return"
       end
     end
 
